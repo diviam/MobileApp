@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Button } from 'react-native-paper';
-import { commonStyles } from '../styles/commonStyles';
+import { commonStyles } from '../../../styles/commonStyles';
 
 interface TimerProps {}
 
@@ -17,6 +17,8 @@ const TimerComponent: React.FC<TimerProps> = () => {
     isActive: false,
     isBreak: false,
   });
+  const [resume, setResume] = useState<boolean>(false)
+
 
   let interval: NodeJS.Timeout | null = null;
 
@@ -40,6 +42,10 @@ const TimerComponent: React.FC<TimerProps> = () => {
       }
     };
   }, [state.isActive]);
+  
+  useEffect(() => {
+    setState({ ...state, isActive: true });
+  }, []);
 
   const formatTime = (timeInSeconds: number) => {
     const hours = Math.floor(timeInSeconds / 3600);
@@ -51,47 +57,33 @@ const TimerComponent: React.FC<TimerProps> = () => {
     )}:${String(seconds).padStart(2, '0')}`;
   };
 
-  const handleStart = () => {
-    setState({ ...state, isActive: true });
-  };
-
   const handleStop = () => {
-    if (state.isBreak) {
-      setState({ ...state, isActive: false, isBreak: false });
-    } else {
-      setState({ ...state, isActive: false, isBreak: true });
-    }
+      setState({ ...state, isActive: false});
+      setResume(!resume)
   };
 
   const handleReset = () => {
     setState({ totalSeconds: 0, isActive: false, isBreak: false });
   };
+  const handleStart = () => {
+    setState({ ...state, isActive: true });
+    setResume(!resume)
+  };
 
   return (
     <View style={[styles.container, commonStyles.offWhiteBg]}>
-      {(!state.isActive && !state.isBreak) && (
-        <Button
-          onPress={handleStart}
-          mode="contained"
-          rippleColor={commonStyles.rippleGreen.backgroundColor}
-          buttonColor={commonStyles.buttonBg.backgroundColor}
-        >
-          Start Your Time
-        </Button>
-      )}
-      {(state.isActive && !state.isBreak) && (
         <View style={{ alignContent: 'center', alignItems: 'center' }}>
           <Text style={styles.timerText}>
             Timer: {formatTime(state.totalSeconds)}
           </Text>
           <View style={styles.buttonContainer}>
             <Button
-              onPress={handleStop}
+              onPress={resume ? handleStart :handleStop}
               mode="contained"
               rippleColor={commonStyles.rippleGreen.backgroundColor}
               buttonColor={commonStyles.buttonBg.backgroundColor}
-            >
-              Break Time
+            >{resume ? "Resume Work" : "Break Time"}
+             
             </Button>
             <Button
               onPress={handleReset}
@@ -103,17 +95,7 @@ const TimerComponent: React.FC<TimerProps> = () => {
             </Button>
           </View>
         </View>
-      )}
-      {(state.isBreak && !state.isActive) && (
-        <Button
-          onPress={handleStop}
-          mode="contained"
-          rippleColor={commonStyles.rippleGreen.backgroundColor}
-          buttonColor={commonStyles.buttonBg.backgroundColor}
-        >
-          Return to Break
-        </Button>
-      )}
+      
     </View>
   );
 };
