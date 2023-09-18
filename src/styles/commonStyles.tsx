@@ -1,17 +1,29 @@
 import { StyleSheet } from "react-native";
+import { colors } from "../colors";
 
 export const commonStyles = StyleSheet.create({
+    commonContainer: {
+        flex: 1,
+        backgroundColor: colors.offWhiteColor
+    },
     offWhiteBg: {
-        backgroundColor: '#FCF6F5'
+        backgroundColor: colors.offWhiteColor
 
     },
     buttonBg: {
-        backgroundColor: '#317773'
+        backgroundColor: colors.oliveGreen
     },
     textBlack: {
-        color: '#101820'
+        color: colors.charcoalBlack
     },
-    rippleColor: {
-        backgroundColor: '#4AB3B9'
+    rippleGreen: {
+        backgroundColor: colors.rippleGreen
+    },
+    redbg: {
+        backgroundColor: colors.cherryRed
+    },
+    rippleRed: {
+        backgroundColor: colors.rippleRed
     }
+
 });
