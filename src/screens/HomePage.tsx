@@ -1,9 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
+import { Text } from 'react-native-paper';
+
 
 const HomePage = ({ navigation }: any) => {
     const toggleScanner = () => {
-        navigation.navigate("QRScannerScreen");
+        navigation.navigate("camera");
     };
 
     return (
