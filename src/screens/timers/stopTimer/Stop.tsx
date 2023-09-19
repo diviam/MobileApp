@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
 import { Button } from 'react-native-paper';
 import { commonStyles } from '../../../styles/commonStyles';
 
@@ -17,8 +17,9 @@ const TimerComponent: React.FC<TimerProps> = () => {
     isActive: false,
     isBreak: false,
   });
-  const [resume, setResume] = useState<boolean>(false)
-
+  const [resume, setResume] = useState<boolean>(false);
+  const [scaleValueStart, setScaleValueStart] = useState(new Animated.Value(1));
+  const [scaleValueLeave, setScaleValueLeave] = useState(new Animated.Value(1));
 
   let interval: NodeJS.Timeout | null = null;
 
@@ -42,7 +43,7 @@ const TimerComponent: React.FC<TimerProps> = () => {
       }
     };
   }, [state.isActive]);
-  
+
   useEffect(() => {
     setState({ ...state, isActive: true });
   }, []);
@@ -58,44 +59,79 @@ const TimerComponent: React.FC<TimerProps> = () => {
   };
 
   const handleStop = () => {
-      setState({ ...state, isActive: false});
-      setResume(!resume)
+    setState({ ...state, isActive: false });
+    setResume(!resume);
   };
 
   const handleReset = () => {
     setState({ totalSeconds: 0, isActive: false, isBreak: false });
   };
+
   const handleStart = () => {
     setState({ ...state, isActive: true });
-    setResume(!resume)
+    setResume(!resume);
+  };
+
+  const animateButton = (buttonType: string) => {
+    // Animate the button when pressed
+    let scaleValue;
+    if (buttonType === 'start') {
+      scaleValue = scaleValueStart;
+    } else {
+      scaleValue = scaleValueLeave;
+    }
+
+    Animated.sequence([
+      Animated.timing(scaleValue, {
+        toValue: 1.2, // Increase the size by 20%
+        duration: 200, // Animation duration in milliseconds
+        useNativeDriver: false, // Set this to true if possible
+        easing: Easing.linear, // You can change the easing function as needed
+        delay: 200,
+      }),
+      Animated.timing(scaleValue, {
+        toValue: 1, // Return to the original size
+        duration: 200, // Animation duration in milliseconds
+        useNativeDriver: false, // Set this to true if possible
+        easing: Easing.linear, // You can change the easing function as needed
+        delay: 200,
+      }),
+    ]).start();
   };
 
   return (
     <View style={[styles.container, commonStyles.offWhiteBg]}>
-        <View style={{ alignContent: 'center', alignItems: 'center' }}>
-          <Text style={styles.timerText}>
-            Timer: {formatTime(state.totalSeconds)}
-          </Text>
-          <View style={styles.buttonContainer}>
+      <View style={{ alignContent: 'center', alignItems: 'center' }}>
+        <Text style={styles.timerText}>Timer: {formatTime(state.totalSeconds)}</Text>
+        <View style={styles.buttonContainer}>
+          <Animated.View style={{ transform: [{ scale: scaleValueStart }] }}>
             <Button
-              onPress={resume ? handleStart :handleStop}
+              onPress={() => {
+                animateButton('start');
+                resume ? handleStart() : handleStop();
+              }}
               mode="contained"
               rippleColor={commonStyles.rippleGreen.backgroundColor}
               buttonColor={commonStyles.buttonBg.backgroundColor}
-            >{resume ? "Resume Work" : "Break Time"}
-             
+            >
+              {resume ? "Resume Work" : "Break Time"}
             </Button>
+          </Animated.View>
+          <Animated.View style={{ transform: [{ scale: scaleValueLeave }] }}>
             <Button
-              onPress={handleReset}
+              onPress={() => {
+                animateButton('leave');
+                handleReset();
+              }}
               mode="contained"
               rippleColor={commonStyles.rippleRed.backgroundColor}
               buttonColor={commonStyles.redbg.backgroundColor}
             >
               Leave Time
             </Button>
-          </View>
+          </Animated.View>
         </View>
-      
+      </View>
     </View>
   );
 };
@@ -107,7 +143,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   timerText: {
-    fontSize: 24,
+    fontSize: 35,
   },
   buttonContainer: {
     flexDirection: 'row',
