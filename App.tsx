@@ -10,6 +10,7 @@ import QRScannerScreen from './src/screens/QRScannerScreen';
 import { Text } from 'react-native';
 import StartScreen from './src/screens/timers/startTimer';
 import TimerComponent from './src/screens/timers/stopTimer';
+import { Camera } from './src/screens/QrScannerNew';
 // // import QRScanner from './screens/QRScanner';
 
 const Stack = createStackNavigator();
@@ -17,9 +18,9 @@ const Stack = createStackNavigator();
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator initialRouteName="home">
         <Stack.Screen
-          name="Home"
+          name="home"
           component={HomePage}
           options={{
             headerShown: true,
@@ -31,6 +32,9 @@ function App() {
             },
           }}
         />
+        <Stack.Screen name="camera" component={Camera} options={{ headerShown: false }} />
+
+
         {/* <Stack.Screen name="Main" component={MainPage} options={{ headerShown: false }} /> */}
         <Stack.Screen name="startTimer" component={StartScreen} options={{ headerShown: false }} />
         <Stack.Screen name="stopTimer" component={TimerComponent} options={{ headerShown: false }} />
