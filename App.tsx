@@ -8,13 +8,14 @@ import { Text } from 'react-native';
 import StartScreen from './src/screens/timers/startTimer';
 import TimerComponent from './src/screens/timers/stopTimer';
 import { Camera } from './src/screens/QrScannerNew';
+import { Login } from './src/screens/login';
 
 const Stack = createStackNavigator();
 
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="startTimer">
+      <Stack.Navigator initialRouteName="login">
         <Stack.Screen
           name="home"
           component={HomePage}
@@ -28,6 +29,8 @@ function App() {
             },
           }}
         />
+        <Stack.Screen name="login" component={Login} options={{ headerShown: false }} />
+
         <Stack.Screen name="camera" component={Camera} options={{ headerShown: false }} />
         <Stack.Screen name="startTimer" component={StartScreen} options={{ headerShown: false }} />
         <Stack.Screen name="stopTimer" component={TimerComponent} options={{ headerShown: false }} />
